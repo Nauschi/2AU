@@ -7,18 +7,21 @@ using UnityEngine.UI;
 public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
 {
     public GameObject ActionBar;
+    public bool isDraggin = false;
+    public GameObject TrapItemPrefab;
 
     private Transform ActionBarTransform;
     private int HierarchyIndex;
     private int TempHierarchyIndex;
     private int TempSelected;
     private bool HierarchyChange;
-    public bool isDraggin = false;
+    private GameObject Player;    
 
     void Start()
     {
         ActionBarTransform = this.transform.parent;
         ActionBar = GameObject.Find("ActionBar");
+        Player = GameObject.Find("Player");
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -186,5 +189,44 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
 
         abs.FrameArray[abs.Selected].GetComponent<Button>().Select();
         isDraggin = false;
+    }
+
+    public void UseItem(Button ab)
+    {
+        Image image = ab.GetComponent<Image>();
+        Sprite sprite = image.sprite;
+        if(sprite != null)
+        {
+            CreateGameObjectOfUsedItem(image);
+        }
+    }
+
+    private bool CreateGameObjectOfUsedItem(Image abImage)
+    {
+        Vector2 playerPos = Player.transform.position;
+        Vector2 droppedPos = new Vector2(playerPos.x, playerPos.y);
+
+        Vector2 prefabScale = new Vector2(TrapItemPrefab.transform.localScale.x * 10, TrapItemPrefab.transform.localScale.y * 10);
+        bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 0);
+        //if (isColliding)
+        //{
+        //    Debug.Log("Damn son, we are colliding");
+        //    return false;
+        //}
+
+        //Create new object on ground
+        //GameObject tempObject = new GameObject("Used_" + TrapItemPrefab.name, typeof(Image));
+        //Debug.Log("Temp created object name: " + tempObject.name);
+        //tempObject.GetComponent<Image>().sprite = abImage.sprite;
+        GameObject createdObject = Instantiate(TrapItemPrefab, droppedPos, Quaternion.identity);
+        Debug.Log("NEW creared object name: " + createdObject.name);
+        //Destroy(tempObject);
+
+        //Remove from ActionBar
+        abImage.sprite = null;
+        Color color = abImage.color;
+        abImage.color = new Color(color.r, color.g, color.b, 0);
+
+        return true;
     }
 }
