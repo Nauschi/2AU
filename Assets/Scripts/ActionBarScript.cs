@@ -175,6 +175,16 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
         //check collision and return if we are colliding
         Vector2 droppedPos = new Vector2(playerPos.x + quantX, playerPos.y + quantY);
         Vector2 prefabScale = new Vector2(TrapItemPrefab.transform.localScale.x * 10, TrapItemPrefab.transform.localScale.y * 10);
+
+        for(int i = -720; i <= 720; i++)
+        {
+            bool temp = Physics2D.OverlapBox(droppedPos, prefabScale, i);
+            if (!temp)
+            {
+                Debug.Log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Angle: " + i + " / " + temp);
+            }
+        }
+
         bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 90);
         if(isColliding)
         {
