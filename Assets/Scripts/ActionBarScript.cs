@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 public class ActionBarScript : MonoBehaviour, IDropHandler
 {
@@ -130,22 +131,51 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
         Vector2 playerPos = Player.transform.position;
 
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        int quant = mousePos.x < Player.transform.position.x ? -1 : 1;
+
+        float xDiff = Math.Abs(Player.transform.position.x - mousePos.x);
+        float yDiff = Math.Abs(Player.transform.position.y - mousePos.y);
+        Debug.Log("mouse xDiff to Player: " + xDiff);
+        Debug.Log("mouse yDiff to Player: " + yDiff);
+
+        int quantX = 0;
+        int quantY = 0;
         
-        if(quant == 1)
+        if(yDiff > xDiff)
+        {
+            quantY = mousePos.y < Player.transform.position.y ? -1 : 1;
+        } else
+        {
+            quantX = mousePos.x < Player.transform.position.x ? -1 : 1;
+        }
+        
+        
+
+        if (quantX == 1)
         {
             animator.SetInteger("LastInput", 3);
             Player.GetComponent<SpriteRenderer>().flipX = false;
-        } else
+        } else if(quantX == -1)
         {
             animator.SetInteger("LastInput", 3);
             Player.GetComponent<SpriteRenderer>().flipX = true;
+        } else
+        {
+            Player.GetComponent<SpriteRenderer>().flipX = false;
+        }
+
+        if (quantY == 1)
+        {
+            animator.SetInteger("LastInput", 2);
+        }
+        else if (quantY == -1)
+        {
+            animator.SetInteger("LastInput", 1);
         }
 
         //check collision and return if we are colliding
-        Vector2 droppedPos = new Vector2(playerPos.x + quant, playerPos.y);
+        Vector2 droppedPos = new Vector2(playerPos.x + quantX, playerPos.y + quantY);
         Vector2 prefabScale = new Vector2(TrapItemPrefab.transform.localScale.x * 10, TrapItemPrefab.transform.localScale.y * 10);
-        bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 0);
+        bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 90);
         if(isColliding)
         {
             Debug.Log("Damn son, we are colliding");
