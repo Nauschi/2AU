@@ -20,6 +20,7 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
 
     public GameObject TrapItemPrefab;
     public GameObject Player;
+    public Animator animator;
 
     // Start is called before the first frame update
     void Start()
@@ -83,11 +84,11 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
         }
 
         //Use selected ActionButton (on click simulation)
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            FrameArray[Selected].GetComponent<Button>().Select();
-            FrameArray[Selected].transform.parent.gameObject.GetComponent<Button>().onClick.Invoke();
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    FrameArray[Selected].GetComponent<Button>().Select();
+        //    FrameArray[Selected].transform.parent.gameObject.GetComponent<Button>().onClick.Invoke();
+        //}
 
     }
 
@@ -130,8 +131,19 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
 
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         int quant = mousePos.x < Player.transform.position.x ? -1 : 1;
-        Vector2 droppedPos = new Vector2(playerPos.x + quant, playerPos.y);
+        
+        if(quant == 1)
+        {
+            animator.SetInteger("LastInput", 3);
+            Player.GetComponent<SpriteRenderer>().flipX = false;
+        } else
+        {
+            animator.SetInteger("LastInput", 3);
+            Player.GetComponent<SpriteRenderer>().flipX = true;
+        }
 
+        //check collision and return if we are colliding
+        Vector2 droppedPos = new Vector2(playerPos.x + quant, playerPos.y);
         Vector2 prefabScale = new Vector2(TrapItemPrefab.transform.localScale.x * 10, TrapItemPrefab.transform.localScale.y * 10);
         bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 0);
         if(isColliding)

@@ -29,12 +29,24 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("Vertical", movement.y);
         animator.SetFloat("Speed", movement.sqrMagnitude);
 
+        if(movement.x != 0)
+        {
+            animator.SetInteger("LastInput", 3);
+        } else if (movement.y < 0)
+        {
+            animator.SetInteger("LastInput", 1);
+        } else if (movement.y > 0)
+        {
+            animator.SetInteger("LastInput", 2);
+        }
+
         if (movement.x < 0) {
             rend.flipX = true;
         } else if (movement.x > 0)
         {
             rend.flipX = false;
         }
+
     }
 
     void FixedUpdate()
