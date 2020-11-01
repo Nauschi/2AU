@@ -21,7 +21,7 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
 
     public GameObject TrapItemPrefab;
     public GameObject Player;
-    public Animator animator;
+    public Animator Animator;
 
     // Start is called before the first frame update
     void Start()
@@ -138,11 +138,11 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
         Debug.Log("mouse yDiff to Player: " + yDiff);
 
         int quantX = 0;
-        int quantY = 0;
-        
-        if(yDiff > xDiff)
+        float quantY = 0;
+        float playerColliderYOffset = Player.GetComponent<BoxCollider2D>().offset.y;
+        if (yDiff > xDiff)
         {
-            quantY = mousePos.y < Player.transform.position.y ? -1 : 1;
+            quantY = mousePos.y < Player.transform.position.y ? -1 + playerColliderYOffset : 1 + playerColliderYOffset;
         } else
         {
             quantX = mousePos.x < Player.transform.position.x ? -1 : 1;
@@ -152,24 +152,24 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
 
         if (quantX == 1)
         {
-            animator.SetInteger("LastInput", 3);
+            Animator.SetInteger("LastInput", 3);
             Player.GetComponent<SpriteRenderer>().flipX = false;
         } else if(quantX == -1)
         {
-            animator.SetInteger("LastInput", 3);
+            Animator.SetInteger("LastInput", 3);
             Player.GetComponent<SpriteRenderer>().flipX = true;
         } else
         {
             Player.GetComponent<SpriteRenderer>().flipX = false;
         }
 
-        if (quantY == 1)
+        if (quantY == 1 + playerColliderYOffset)
         {
-            animator.SetInteger("LastInput", 2);
+            Animator.SetInteger("LastInput", 2);
         }
-        else if (quantY == -1)
+        else if (quantY == -1 + playerColliderYOffset)
         {
-            animator.SetInteger("LastInput", 1);
+            Animator.SetInteger("LastInput", 1);
         }
 
         //check collision and return if we are colliding

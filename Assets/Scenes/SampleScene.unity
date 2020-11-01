@@ -1302,6 +1302,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4713831798563050255, guid: 6ecfde399fdbb67448b9fe992ae9ac16,
+        type: 3}
+      propertyPath: m_Offset.x
+      value: 0.0067687035
+      objectReference: {fileID: 0}
+    - target: {fileID: 4713831798563050255, guid: 6ecfde399fdbb67448b9fe992ae9ac16,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ecfde399fdbb67448b9fe992ae9ac16, type: 3}
 --- !u!1 &1410001456
@@ -2057,7 +2067,7 @@ MonoBehaviour:
   TrapItemPrefab: {fileID: 4713831798563050248, guid: 6ecfde399fdbb67448b9fe992ae9ac16,
     type: 3}
   Player: {fileID: 237714865}
-  animator: {fileID: 237714870}
+  Animator: {fileID: 237714870}
 --- !u!224 &2108303140 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2422311809181857296, guid: 7573fc8dba9e49940954aea5a3fb7447,
