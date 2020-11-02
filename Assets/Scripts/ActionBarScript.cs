@@ -179,7 +179,7 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
         bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 90);
         if(isColliding)
         {
-            Debug.Log("Damn son, we are colliding");
+            Debug.Log("Damn son, we are colliding ");
             return false;
         }
 
