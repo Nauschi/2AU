@@ -3,48 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player : MonoBehaviour
+public class PlayerCollision : MonoBehaviour
 {
+
     //Player RigidBody
     public Rigidbody2D rb;
 
-    //HealthBar stuff
-    public HealthBar hpBar;
-    public int maxHealth = 100;
-    public int currentHealth;
-
     //ActionBar stuff
-    public GameObject ActionBar;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        currentHealth = maxHealth;
-        hpBar.SetMaxHealth(maxHealth);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            //TakeDamage(10);
-        }   
-    }
-
-    void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        hpBar.SetHealth(currentHealth);
-    }
+    public Actionbar ActionBar;
+    public EquippedItem EqItem;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Item"))
+        if (other.gameObject.CompareTag("CollectableItem"))
         {
-            ActionBarScript abs = ActionBar.GetComponent<ActionBarScript>();
-            Image[] frameArray = abs.FrameArray;
+            Image[] frameArray = ActionBar.FrameArray;
             Button ab1 = frameArray[0].transform.parent.gameObject.GetComponent<Button>();
             Button ab2 = frameArray[1].transform.parent.gameObject.GetComponent<Button>();
             Button ab3 = frameArray[2].transform.parent.gameObject.GetComponent<Button>();
@@ -70,7 +43,7 @@ public class Player : MonoBehaviour
                 ab3.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 255);
                 Destroy(other.gameObject);
             }
-            
+            EqItem.CheckEquippedItem();
         }
     }
 }

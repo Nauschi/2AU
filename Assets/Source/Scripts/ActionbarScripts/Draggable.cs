@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
 {
-    public GameObject ActionBar;
     public bool isDraggin = false;
     public GameObject TrapItemPrefab;
 
@@ -15,12 +14,13 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
     private int TempHierarchyIndex;
     private int TempSelected;
     private bool HierarchyChange;
-    private GameObject Player;    
+    private GameObject Player;
+    private Actionbar ActionBar;
 
     void Start()
     {
+        ActionBar = this.transform.parent.gameObject.GetComponent<Actionbar>();
         ActionBarTransform = this.transform.parent;
-        ActionBar = GameObject.Find("ActionBar");
         Player = GameObject.Find("Player");
     }
 
@@ -30,7 +30,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
         HierarchyIndex = this.transform.GetSiblingIndex();
         this.transform.SetParent(this.transform.root);
         TempHierarchyIndex = HierarchyIndex;
-        TempSelected = ActionBar.GetComponent<ActionBarScript>().Selected;
+        TempSelected = ActionBar.Selected;
         HierarchyChange = false;
         isDraggin = true;
     }
@@ -43,8 +43,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
         {
             GetComponent<CanvasGroup>().blocksRaycasts = false;
         }
-        ActionBarScript abs = ActionBar.GetComponent<ActionBarScript>();
-        Image[] frameArray = abs.FrameArray;
+        Image[] frameArray = ActionBar.FrameArray;
         //Image draggedFrame = FindComponentInChildWithTag<Image>(this.transform.gameObject, "ActionButtonFrame");
         Image draggedActionButton = this.gameObject.GetComponent<Image>();
         float draggedX = draggedActionButton.transform.position.x;
@@ -58,10 +57,11 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
                     HierarchyChange = true;
                     switch (TempSelected)
                     {
-                        case 0: abs.Selected = 1;
+                        case 0:
+                            ActionBar.Selected = 1;
                             break;
                         case 1:
-                            abs.Selected = 0;
+                            ActionBar.Selected = 0;
                             break;
                     }
                 } else if (draggedX < frameArray[1].transform.parent.position.x)
@@ -75,13 +75,14 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
                     HierarchyChange = true;
                     switch (TempSelected)
                     {
-                        case 0: abs.Selected = 2;
+                        case 0:
+                            ActionBar.Selected = 2;
                             break;
                         case 1:
-                            abs.Selected = 0;
+                            ActionBar.Selected = 0;
                             break;
                         case 2:
-                            abs.Selected = 1;
+                            ActionBar.Selected = 1;
                             break;
                     }
                 }
@@ -99,10 +100,10 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
                     switch (TempSelected)
                     {
                         case 0:
-                            abs.Selected = 1;
+                            ActionBar.Selected = 1;
                             break;
                         case 1:
-                            abs.Selected = 0;
+                            ActionBar.Selected = 0;
                             break;
                     }
                 }
@@ -114,10 +115,10 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
                     switch (TempSelected)
                     {
                         case 1:
-                            abs.Selected = 2;
+                            ActionBar.Selected = 2;
                             break;
                         case 2:
-                            abs.Selected = 1;
+                            ActionBar.Selected = 1;
                             break;
                     }
                 }
@@ -131,10 +132,10 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
                     switch (TempSelected)
                     {
                         case 2:
-                            abs.Selected = 1;
+                            ActionBar.Selected = 1;
                             break;
                         case 1:
-                            abs.Selected = 2;
+                            ActionBar.Selected = 2;
                             break;
                     }
                 } else if (draggedX < frameArray[0].transform.parent.position.x)
@@ -145,13 +146,13 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
                     switch (TempSelected)
                     {
                         case 0:
-                            abs.Selected = 1;
+                            ActionBar.Selected = 1;
                             break;
                         case 1:
-                            abs.Selected = 2;
+                            ActionBar.Selected = 2;
                             break;
                         case 2:
-                            abs.Selected = 0;
+                            ActionBar.Selected = 0;
                             break;
                     }
                 }
@@ -177,56 +178,16 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
         ActionBar.GetComponent<GridLayoutGroup>().spacing = new Vector2(-40, 0);
         GetComponent<CanvasGroup>().blocksRaycasts = true;
 
-        ActionBarScript abs = ActionBar.GetComponent<ActionBarScript>();
         //reload frameArray in case of hierarchy changes
         if (HierarchyChange)
         {
             foreach (Transform child in ActionBar.transform)
             {
-                abs.FrameArray[child.GetSiblingIndex()] = child.GetChild(0).gameObject.GetComponent<Image>();
+                ActionBar.FrameArray[child.GetSiblingIndex()] = child.GetChild(0).gameObject.GetComponent<Image>();
             }
         }
 
-        abs.FrameArray[abs.Selected].GetComponent<Button>().Select();
+        ActionBar.FrameArray[ActionBar.Selected].GetComponent<Button>().Select();
         isDraggin = false;
-    }
-
-    public void UseItem(Button ab)
-    {
-        Image image = ab.GetComponent<Image>();
-        Sprite sprite = image.sprite;
-        if(sprite != null)
-        {
-            CreateGameObjectOfUsedItem(image);
-        }
-    }
-
-    private bool CreateGameObjectOfUsedItem(Image abImage)
-    {
-        Vector2 playerPos = Player.transform.position;
-        Vector2 droppedPos = new Vector2(playerPos.x, playerPos.y);
-
-        Vector2 prefabScale = new Vector2(TrapItemPrefab.transform.localScale.x * 10, TrapItemPrefab.transform.localScale.y * 10);
-        bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 0);
-        //if (isColliding)
-        //{
-        //    Debug.Log("Damn son, we are colliding");
-        //    return false;
-        //}
-
-        //Create new object on ground
-        //GameObject tempObject = new GameObject("Used_" + TrapItemPrefab.name, typeof(Image));
-        //Debug.Log("Temp created object name: " + tempObject.name);
-        //tempObject.GetComponent<Image>().sprite = abImage.sprite;
-        GameObject createdObject = Instantiate(TrapItemPrefab, droppedPos, Quaternion.identity);
-        Debug.Log("NEW creared object name: " + createdObject.name);
-        //Destroy(tempObject);
-
-        //Remove from ActionBar
-        abImage.sprite = null;
-        Color color = abImage.color;
-        abImage.color = new Color(color.r, color.g, color.b, 0);
-
-        return true;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-public class ActionBarScript : MonoBehaviour, IDropHandler
+public class Actionbar : MonoBehaviour, IDropHandler
 {
 
     public Image Frame1;
@@ -23,13 +23,20 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
     public GameObject Player;
     public Animator Animator;
 
+    enum PlayerDirection
+    {
+        DOWN = 1,
+        UP = 2,
+        SIDE = 3,
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         Button ActionButton1 = Frame1.GetComponent<Button>();
         ActionButton1.Select();
         Selected = 0;
-        FrameArray = new Image[]{ Frame1, Frame2, Frame3};
+        FrameArray = new Image[] { Frame1, Frame2, Frame3 };
     }
 
     // Update is called once per frame
@@ -37,22 +44,25 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
     {
 
         //Select ActionButton with scroll input
-        if(Input.mouseScrollDelta.y < 0)
+        if (Input.mouseScrollDelta.y < 0)
         {
-            if(Selected < 2)
+            if (Selected < 2)
             {
                 Selected++;
-            } else
+            }
+            else
             {
                 Selected = 0;
             }
             FrameArray[Selected].GetComponent<Button>().Select();
-        } else if (Input.mouseScrollDelta.y > 0)
+        }
+        else if (Input.mouseScrollDelta.y > 0)
         {
-            if(Selected > 0)
+            if (Selected > 0)
             {
                 Selected--;
-            } else
+            }
+            else
             {
                 Selected = 2;
             }
@@ -64,38 +74,28 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
         {
             Selected = 0;
             FrameArray[Selected].GetComponent<Button>().Select();
-        } else if (Input.GetKey(KeyCode.Alpha2))
+        }
+        else if (Input.GetKey(KeyCode.Alpha2))
         {
             Selected = 1;
             FrameArray[Selected].GetComponent<Button>().Select();
-        } else if (Input.GetKey(KeyCode.Alpha3))
+        }
+        else if (Input.GetKey(KeyCode.Alpha3))
         {
             Selected = 2;
             FrameArray[Selected].GetComponent<Button>().Select();
         }
 
-        //Listen to drop item key binding
-        if (Input.GetKey(KeyCode.F))
+        //Listen to "UseItem" Keybinding (hardcoded Space at the moment)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Image abImage = FrameArray[Selected].transform.parent.gameObject.GetComponent<Image>();
+            FrameArray[Selected].GetComponent<Button>().Select();
             if (abImage.sprite != null)
             {
-                DropSelectedItem(abImage);
+                UseSelectedItem(abImage);
             }
         }
-
-        //Use selected ActionButton (on click simulation)
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    FrameArray[Selected].GetComponent<Button>().Select();
-        //    FrameArray[Selected].transform.parent.gameObject.GetComponent<Button>().onClick.Invoke();
-        //}
-
-    }
-
-    void FixedUpdate()
-    {
-        
     }
 
     /// <summary>Select the button when clicked on and remember the new selected value</summary>
@@ -103,7 +103,7 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
     {
         int selected = Selected;
         int index = 0;
-        foreach(Image frame in FrameArray)
+        foreach (Image frame in FrameArray)
         {
             if (frame.name.Equals(clickedFrame.name))
             {
@@ -126,50 +126,31 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
         return FrameArray[Selected];
     }
 
-    private bool DropSelectedItem(Image abImage)
+    private bool UseSelectedItem(Image abImage)
     {
         Vector2 playerPos = Player.transform.position;
-
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        float xDiff = Math.Abs(Player.transform.position.x - mousePos.x);
-        float yDiff = Math.Abs(Player.transform.position.y - mousePos.y);
-        Debug.Log("mouse xDiff to Player: " + xDiff);
-        Debug.Log("mouse yDiff to Player: " + yDiff);
-
         int quantX = 0;
         float quantY = 0;
-        float playerColliderYOffset = Player.GetComponent<BoxCollider2D>().offset.y;
-        if (yDiff > xDiff)
-        {
-            quantY = mousePos.y < Player.transform.position.y ? -1 + playerColliderYOffset : 1 + playerColliderYOffset;
-        } else
-        {
-            quantX = mousePos.x < Player.transform.position.x ? -1 : 1;
-        }
-        
-        
+        float playerColliderYOffset = Player.GetComponent<BoxCollider2D>().offset.y; //offset of the PlayerCollider on y axis
 
-        if (quantX == 1)
+        PlayerDirection pd = (PlayerDirection)Animator.GetInteger("LastInput"); //check what the last direction of the player was
+        switch (pd)
         {
-            Animator.SetInteger("LastInput", 3);
-            Player.GetComponent<SpriteRenderer>().flipX = false;
-        } else if(quantX == -1)
-        {
-            Animator.SetInteger("LastInput", 3);
-            Player.GetComponent<SpriteRenderer>().flipX = true;
-        } else
-        {
-            Player.GetComponent<SpriteRenderer>().flipX = false;
+            case PlayerDirection.DOWN:
+                quantY = -1 + playerColliderYOffset;
+                break;
+            case PlayerDirection.UP:
+                quantY = 1 + playerColliderYOffset;
+                break;
+            case PlayerDirection.SIDE:
+                quantX = 1;
+                break;
         }
 
-        if (quantY == 1 + playerColliderYOffset)
+        //flippidi flip flip
+        if (quantX > 0 && Player.GetComponent<SpriteRenderer>().flipX)
         {
-            Animator.SetInteger("LastInput", 2);
-        }
-        else if (quantY == -1 + playerColliderYOffset)
-        {
-            Animator.SetInteger("LastInput", 1);
+            quantX = -1;
         }
 
         //check collision and return if we are colliding
@@ -177,7 +158,7 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
         Vector2 prefabScale = new Vector2(TrapItemPrefab.transform.localScale.x * 10, TrapItemPrefab.transform.localScale.y * 10);
 
         bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 90);
-        if(isColliding)
+        if (isColliding)
         {
             Debug.Log("Damn son, we are colliding ");
             return false;
@@ -194,3 +175,4 @@ public class ActionBarScript : MonoBehaviour, IDropHandler
         return true;
     }
 }
+
