@@ -1,15 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using static AbstractItem;
 
 public class PlayerCollision : MonoBehaviour
 {
-
-    //Player RigidBody
-    public Rigidbody2D rb;
-
     //ActionBar stuff
     public Actionbar ActionBar;
     public EquippedItem EqItem;

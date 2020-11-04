@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface IItem
 {
@@ -9,6 +7,6 @@ public interface IItem
     string Tag { get; set; }
     Sprite Sprite { get; set; }
 
-    void useItem(GameObject player, ActionButton abs);
+    void UseItem(GameObject player, ActionButton abs);
 
 }

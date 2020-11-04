@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GunItem : AbstractItem, IItem
 {
@@ -19,7 +17,7 @@ public class GunItem : AbstractItem, IItem
         _tag = tag;
     }
 
-    public void useItem(GameObject player, ActionButton abs)
+    public void UseItem(GameObject player, ActionButton abs)
     {
         throw new System.NotImplementedException();
     }

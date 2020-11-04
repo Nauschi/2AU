@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -13,14 +11,12 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
     private int TempHierarchyIndex;
     private int TempSelected;
     private bool HierarchyChange;
-    private GameObject Player;
     private Actionbar ActionBar;
 
     void Start()
     {
         ActionBar = this.transform.parent.gameObject.GetComponent<Actionbar>();
         ActionBarTransform = this.transform.parent;
-        Player = GameObject.Find("Player");
     }
 
     public void OnBeginDrag(PointerEventData eventData)

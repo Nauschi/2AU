@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 public class TrapItem : AbstractItem, IItem
 {
@@ -20,7 +19,7 @@ public class TrapItem : AbstractItem, IItem
         CollectableItemPrefab = (GameObject) Resources.Load("Prefabs/Items/CollectableItem", typeof(GameObject));
     }
 
-    public void useItem(GameObject player, ActionButton abs)
+    public void UseItem(GameObject player, ActionButton abs)
     {
         Vector2 playerPos = player.transform.position;
         int quantX = 0;

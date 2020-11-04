@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System;
 
 public class Actionbar : MonoBehaviour, IDropHandler
 {
@@ -12,15 +9,10 @@ public class Actionbar : MonoBehaviour, IDropHandler
     public Image Frame2;
     public Image Frame3;
 
-    public Button Ab1;
-    public Button Ab2;
-    public Button Ab3;
-
     public Image[] FrameArray;
     public int Selected;
 
     public GameObject Player;
-    public Animator Animator;
     public EquippedItem EqItem;
 
     // Start is called before the first frame update
@@ -132,7 +124,7 @@ public class Actionbar : MonoBehaviour, IDropHandler
 
         try
         {
-            item.useItem(Player, abs);
+            item.UseItem(Player, abs);
         }
         catch (System.Exception ex)
         {
