@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static AbstractItem;
 
 public class PlayerCollision : MonoBehaviour
 {
@@ -15,38 +16,31 @@ public class PlayerCollision : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("CollectableItem"))
+        if (other.gameObject.CompareTag("Item") && other.gameObject.GetComponent<CollectableItem>().Collectable.Tag.Equals(ItemTag.Collectable))
         {
             Image[] frameArray = ActionBar.FrameArray;
-            Button ab1 = frameArray[0].transform.parent.gameObject.GetComponent<Button>();
-            Button ab2 = frameArray[1].transform.parent.gameObject.GetComponent<Button>();
-            Button ab3 = frameArray[2].transform.parent.gameObject.GetComponent<Button>();
+
+            // I likey likey hardcoded. Can be adjusted to for loop as well in the future
+            ActionButton abs1 = frameArray[0].transform.parent.gameObject.GetComponent<ActionButton>();
+            ActionButton abs2 = frameArray[1].transform.parent.gameObject.GetComponent<ActionButton>();
+            ActionButton abs3 = frameArray[2].transform.parent.gameObject.GetComponent<ActionButton>();
 
             CollectableItem item = other.GetComponent<CollectableItem>();
 
-            if (ab1.GetComponent<Image>().sprite == null)
+            if (abs1.Item == null)
             {
-                ab1.GetComponent<Image>().sprite = other.GetComponent<SpriteRenderer>().sprite;
-                Color color = ab1.GetComponent<Image>().color;
-                ab1.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 255);
+                abs1.Item = item.Collectable;
                 Destroy(other.gameObject);
-                ab1.gameObject.GetComponent<ActionButton>().Item = item.Collectable;
             }
-            else if (ab2.GetComponent<Image>().sprite == null)
+            else if (abs2.Item == null)
             {
-                ab2.GetComponent<Image>().sprite = other.GetComponent<SpriteRenderer>().sprite;
-                Color color = ab2.GetComponent<Image>().color;
-                ab2.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 255);
+                abs2.Item = item.Collectable;
                 Destroy(other.gameObject);
-                ab2.gameObject.GetComponent<ActionButton>().Item = item.Collectable;
             }
-            else if (ab3.GetComponent<Image>().sprite == null)
+            else if (abs3.Item == null)
             {
-                ab3.GetComponent<Image>().sprite = other.GetComponent<SpriteRenderer>().sprite;
-                Color color = ab3.GetComponent<Image>().color;
-                ab3.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 255);
+                abs3.Item = item.Collectable;
                 Destroy(other.gameObject);
-                ab3.gameObject.GetComponent<ActionButton>().Item = item.Collectable;
             }
             EqItem.CheckEquippedItem();
         }

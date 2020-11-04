@@ -19,17 +19,9 @@ public class Actionbar : MonoBehaviour, IDropHandler
     public Image[] FrameArray;
     public int Selected;
 
-    public GameObject CollectableItemPrefab;
     public GameObject Player;
     public Animator Animator;
     public EquippedItem EqItem;
-
-    enum PlayerDirection
-    {
-        DOWN = 1,
-        UP = 2,
-        SIDE = 3,
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -73,17 +65,17 @@ public class Actionbar : MonoBehaviour, IDropHandler
         }
 
         //Select ActionButton with Alpha Keys
-        if (Input.GetKey(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             Selected = 0;
             FrameArray[Selected].GetComponent<Button>().Select();
         }
-        else if (Input.GetKey(KeyCode.Alpha2))
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             Selected = 1;
             FrameArray[Selected].GetComponent<Button>().Select();
         }
-        else if (Input.GetKey(KeyCode.Alpha3))
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             Selected = 2;
             FrameArray[Selected].GetComponent<Button>().Select();
@@ -93,10 +85,11 @@ public class Actionbar : MonoBehaviour, IDropHandler
         if (Input.GetKeyDown(KeyCode.Space))
         {
             GameObject ab = FrameArray[Selected].transform.parent.gameObject;
-            FrameArray[Selected].GetComponent<Button>().Select();
-            if (ab.GetComponent<Image>().sprite != null)
+            ActionButton abs = ab.GetComponent<ActionButton>();
+            FrameArray[Selected].GetComponent<Button>().Select(); // select the button component of the frame image
+            if (abs.Item != null)
             {
-                UseSelectedItem(ab);
+                UseSelectedItem(abs);
                 EqItem.CheckEquippedItem();
             }
         }
@@ -130,62 +123,22 @@ public class Actionbar : MonoBehaviour, IDropHandler
         return FrameArray[Selected];
     }
 
-    private bool UseSelectedItem(GameObject ab)
+    private bool UseSelectedItem(ActionButton abs)
     {
-        ActionButton abScript = ab.GetComponent<ActionButton>();
-        Image abImage = ab.GetComponent<Image>();
+       // Image abImage = ab.GetComponent<Image>();
 
-        Debug.Log("Using ActionButton Item: " + abScript.Item.Name);
+        Debug.Log("Using ActionButton Item: " + abs.Item.Name);
+        IItem item = abs.Item;
 
-        Vector2 playerPos = Player.transform.position;
-        int quantX = 0;
-        float quantY = 0;
-        float playerColliderYOffset = Player.GetComponent<BoxCollider2D>().offset.y; //offset of the PlayerCollider on y axis
-
-        PlayerDirection pd = (PlayerDirection)Animator.GetInteger("LastInput"); //check what the last direction of the player was
-        switch (pd)
+        try
         {
-            case PlayerDirection.DOWN:
-                quantY = -1 + playerColliderYOffset;
-                break;
-            case PlayerDirection.UP:
-                quantY = 1 + playerColliderYOffset;
-                break;
-            case PlayerDirection.SIDE:
-                quantX = 1;
-                break;
+            item.useItem(Player, abs);
         }
-
-        //flippidi flip flip
-        if (quantX > 0 && Player.GetComponent<SpriteRenderer>().flipX)
+        catch (System.Exception ex)
         {
-            quantX = -1;
-        }
-
-        //check collision and return if we are colliding
-        Vector2 droppedPos = new Vector2(playerPos.x + quantX, playerPos.y + quantY);
-        Vector2 prefabScale = new Vector2(CollectableItemPrefab.transform.localScale.x * 10, CollectableItemPrefab.transform.localScale.y * 10);
-
-        bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 90);
-        if (isColliding)
-        {
-            Debug.Log("Damn son, we are colliding ");
+            Debug.LogError("Exception occurred while trying to use selected item > " + ex.Message);
             return false;
         }
-
-        //Remove from ActionBar
-        abImage.sprite = null;
-        Color color = abImage.color;
-        abImage.color = new Color(color.r, color.g, color.b, 0);
-
-        //Create new object on ground
-        GameObject createdObject = Instantiate(CollectableItemPrefab, droppedPos, Quaternion.identity);
-        createdObject.GetComponent<CollectableItem>().Collectable = abScript.Item;
-        createdObject.GetComponent<CollectableItem>().randomGen = false;
-        createdObject.GetComponent<SpriteRenderer>().sprite = abScript.Item.Sprite;
-        Debug.Log("CreatedObject sprite: " + createdObject.GetComponent<SpriteRenderer>().sprite);
-        CollectableItem ca = createdObject.GetComponent<CollectableItem>();
-        Debug.Log("CreatedObject Item: " + ca.Collectable.Name);
         return true;
     }
 }

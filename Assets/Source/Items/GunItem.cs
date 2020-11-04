@@ -18,4 +18,9 @@ public class GunItem : AbstractItem, IItem
         _sprite = sprite;
         _tag = tag;
     }
+
+    public void useItem(GameObject player, ActionButton abs)
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -14,6 +14,8 @@ public class AbstractItem
     private Sprite Sprite;
     private string Tag;
 
+    public GameObject CollectableItemPrefab;
+
     public AbstractItem(string name, Sprite sprite, string tag)
     {
         Name = name;

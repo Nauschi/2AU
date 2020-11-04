@@ -11,6 +11,13 @@ public class PlayerMovement : MonoBehaviour
 
     Vector2 movement;
 
+    public enum PlayerDirection
+    {
+        DOWN = 1,
+        UP = 2,
+        SIDE = 3,
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -31,13 +38,13 @@ public class PlayerMovement : MonoBehaviour
 
         if(movement.x != 0)
         {
-            animator.SetInteger("LastInput", 3);
+            animator.SetInteger("LastInput", (int) PlayerDirection.SIDE);
         } else if (movement.y < 0)
         {
-            animator.SetInteger("LastInput", 1);
+            animator.SetInteger("LastInput", (int) PlayerDirection.DOWN);
         } else if (movement.y > 0)
         {
-            animator.SetInteger("LastInput", 2);
+            animator.SetInteger("LastInput", (int) PlayerDirection.UP);
         }
 
         if (movement.x < 0) {

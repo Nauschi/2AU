@@ -28,7 +28,6 @@ public class CollectableItem : MonoBehaviour
             {
                 Debug.Log("I am empty. Please feed me master");
             }
-
             CreateRandomCollectableItem();
         }
     }
@@ -42,8 +41,12 @@ public class CollectableItem : MonoBehaviour
         name = name.Substring(0, name.IndexOf("Icon"));
         switch (name)
         {
-            case ItemType.Trap: Collectable = new TrapItem(name, Sprites[randomItem], ItemTag.Collectable); break;
-            case ItemType.Gun: Collectable = new GunItem(name, Sprites[randomItem], ItemTag.Collectable); break;
+            case ItemType.Trap:
+                Collectable = new TrapItem(name, Sprites[randomItem], ItemTag.Collectable);
+                break;
+            case ItemType.Gun:
+                Collectable = new GunItem(name, Sprites[randomItem], ItemTag.Collectable);
+                break;
         }
 
         this.gameObject.GetComponent<SpriteRenderer>().sprite = Collectable.Sprite;
