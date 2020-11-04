@@ -19,9 +19,10 @@ public class Actionbar : MonoBehaviour, IDropHandler
     public Image[] FrameArray;
     public int Selected;
 
-    public GameObject TrapItemPrefab;
+    public GameObject CollectableItemPrefab;
     public GameObject Player;
     public Animator Animator;
+    public EquippedItem EqItem;
 
     enum PlayerDirection
     {
@@ -54,6 +55,7 @@ public class Actionbar : MonoBehaviour, IDropHandler
             {
                 Selected = 0;
             }
+            EqItem.CheckEquippedItem();
             FrameArray[Selected].GetComponent<Button>().Select();
         }
         else if (Input.mouseScrollDelta.y > 0)
@@ -66,6 +68,7 @@ public class Actionbar : MonoBehaviour, IDropHandler
             {
                 Selected = 2;
             }
+            EqItem.CheckEquippedItem();
             FrameArray[Selected].GetComponent<Button>().Select();
         }
 
@@ -89,11 +92,12 @@ public class Actionbar : MonoBehaviour, IDropHandler
         //Listen to "UseItem" Keybinding (hardcoded Space at the moment)
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Image abImage = FrameArray[Selected].transform.parent.gameObject.GetComponent<Image>();
+            GameObject ab = FrameArray[Selected].transform.parent.gameObject;
             FrameArray[Selected].GetComponent<Button>().Select();
-            if (abImage.sprite != null)
+            if (ab.GetComponent<Image>().sprite != null)
             {
-                UseSelectedItem(abImage);
+                UseSelectedItem(ab);
+                EqItem.CheckEquippedItem();
             }
         }
     }
@@ -126,8 +130,13 @@ public class Actionbar : MonoBehaviour, IDropHandler
         return FrameArray[Selected];
     }
 
-    private bool UseSelectedItem(Image abImage)
+    private bool UseSelectedItem(GameObject ab)
     {
+        ActionButton abScript = ab.GetComponent<ActionButton>();
+        Image abImage = ab.GetComponent<Image>();
+
+        Debug.Log("Using ActionButton Item: " + abScript.Item.Name);
+
         Vector2 playerPos = Player.transform.position;
         int quantX = 0;
         float quantY = 0;
@@ -155,7 +164,7 @@ public class Actionbar : MonoBehaviour, IDropHandler
 
         //check collision and return if we are colliding
         Vector2 droppedPos = new Vector2(playerPos.x + quantX, playerPos.y + quantY);
-        Vector2 prefabScale = new Vector2(TrapItemPrefab.transform.localScale.x * 10, TrapItemPrefab.transform.localScale.y * 10);
+        Vector2 prefabScale = new Vector2(CollectableItemPrefab.transform.localScale.x * 10, CollectableItemPrefab.transform.localScale.y * 10);
 
         bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 90);
         if (isColliding)
@@ -170,8 +179,13 @@ public class Actionbar : MonoBehaviour, IDropHandler
         abImage.color = new Color(color.r, color.g, color.b, 0);
 
         //Create new object on ground
-        GameObject createdObject = Instantiate(TrapItemPrefab, droppedPos, Quaternion.identity);
-        Debug.Log("Local Scale of created Object is: " + createdObject.transform.localScale);
+        GameObject createdObject = Instantiate(CollectableItemPrefab, droppedPos, Quaternion.identity);
+        createdObject.GetComponent<CollectableItem>().Collectable = abScript.Item;
+        createdObject.GetComponent<CollectableItem>().randomGen = false;
+        createdObject.GetComponent<SpriteRenderer>().sprite = abScript.Item.Sprite;
+        Debug.Log("CreatedObject sprite: " + createdObject.GetComponent<SpriteRenderer>().sprite);
+        CollectableItem ca = createdObject.GetComponent<CollectableItem>();
+        Debug.Log("CreatedObject Item: " + ca.Collectable.Name);
         return true;
     }
 }

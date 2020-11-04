@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHandler, IEndDragHandler
 {
     public bool isDraggin = false;
-    public GameObject TrapItemPrefab;
 
     private Transform ActionBarTransform;
     private int HierarchyIndex;
