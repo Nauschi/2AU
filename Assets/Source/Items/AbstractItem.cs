@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class AbstractItem
+public abstract class AbstractItem
 {
     public static class ItemTag
     {
