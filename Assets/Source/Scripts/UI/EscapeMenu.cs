@@ -7,6 +7,9 @@ public class EscapeMenu : MonoBehaviour
 {
 
     private bool musicPlaying = false;
+    public bool IsMenuOpen = false;
+    public GameObject SoundsMenu;
+    public GameObject OptionsMenu;
 
     public void QuitGame()
     {
@@ -25,4 +28,19 @@ public class EscapeMenu : MonoBehaviour
         }
     }
 
+    public void OnClickSettingsButton()
+    {
+        if (IsMenuOpen)
+        {
+            this.gameObject.SetActive(false);
+            OptionsMenu.SetActive(false);
+            SoundsMenu.SetActive(false);
+            IsMenuOpen = false;
+        }
+        else
+        {
+            this.gameObject.SetActive(true);
+            IsMenuOpen = true;
+        }
+    }
 }

@@ -16,6 +16,8 @@ public class Actionbar : MonoBehaviour, IDropHandler
     public EquippedItem EqItem;
 
     public GameObject EscapeMenu;
+    public GameObject SoundsMenu;
+    public GameObject OptionsMenu;
 
     // Start is called before the first frame update
     void Start()
@@ -105,10 +107,20 @@ public class Actionbar : MonoBehaviour, IDropHandler
             if (EscapeMenu.activeSelf)
             {
                 EscapeMenu.SetActive(false);
+                EscapeMenu.GetComponent<EscapeMenu>().IsMenuOpen = false;
+            } else if (OptionsMenu.activeSelf)
+            {
+                OptionsMenu.SetActive(false);
+                EscapeMenu.SetActive(true);
+            } else if (SoundsMenu.activeSelf)
+            {
+                SoundsMenu.SetActive(false);
+                OptionsMenu.SetActive(true);
             }
             else
             {
                 EscapeMenu.SetActive(true);
+                EscapeMenu.GetComponent<EscapeMenu>().IsMenuOpen = true;
             }
         }
     }
