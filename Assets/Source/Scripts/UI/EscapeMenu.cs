@@ -14,6 +14,14 @@ public class EscapeMenu : MonoBehaviour
     public void QuitGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        this.gameObject.SetActive(false);
+        IsMenuOpen = false;
+    }
+
+    public void ResumeGame()
+    {
+        this.gameObject.SetActive(false);
+        IsMenuOpen = false;
     }
 
     public void OnValueChanged(float value)
