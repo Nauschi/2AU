@@ -30,19 +30,19 @@ public class PlayerMovement : MonoBehaviour
             moveSpeed = 5;
         }
 
-        animator.SetFloat("Horizontal", movement.x);
-        animator.SetFloat("Vertical", movement.y);
-        animator.SetFloat("Speed", movement.sqrMagnitude);
+        animator.SetFloat(AnimatorConstant.Horizontal.Name, movement.x);
+        animator.SetFloat(AnimatorConstant.Vertical.Name, movement.y);
+        animator.SetFloat(AnimatorConstant.Speed.Name, movement.sqrMagnitude);
 
         if(movement.x != 0)
         {
-            animator.SetInteger("LastInput", (int) PlayerDirection.SIDE);
+            animator.SetInteger(AnimatorConstant.LastInput.Name, (int) PlayerDirection.SIDE);
         } else if (movement.y < 0)
         {
-            animator.SetInteger("LastInput", (int) PlayerDirection.DOWN);
+            animator.SetInteger(AnimatorConstant.LastInput.Name, (int) PlayerDirection.DOWN);
         } else if (movement.y > 0)
         {
-            animator.SetInteger("LastInput", (int) PlayerDirection.UP);
+            animator.SetInteger(AnimatorConstant.LastInput.Name, (int) PlayerDirection.UP);
         }
 
         if (movement.x < 0) {
