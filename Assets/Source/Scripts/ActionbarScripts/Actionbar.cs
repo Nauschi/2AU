@@ -15,6 +15,8 @@ public class Actionbar : MonoBehaviour, IDropHandler
     public GameObject Player;
     public EquippedItem EqItem;
 
+    public GameObject EscapeMenu;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +29,13 @@ public class Actionbar : MonoBehaviour, IDropHandler
     // Update is called once per frame
     void Update()
     {
+        SelectActionButtonListener();
+        UseActionButtonListener();
+        OpenMenuListener(); // has to be implemented in this script, because Actionbar is always active. EscapeMenu is inactive in the beginning
+    }
 
+    private void SelectActionButtonListener()
+    {
         //Select ActionButton with scroll input
         if (Input.mouseScrollDelta.y < 0)
         {
@@ -72,7 +80,10 @@ public class Actionbar : MonoBehaviour, IDropHandler
             Selected = 2;
             FrameArray[Selected].GetComponent<Button>().Select();
         }
+    }
 
+    private void UseActionButtonListener()
+    {
         //Listen to "UseItem" Keybinding (hardcoded Space at the moment)
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -87,8 +98,23 @@ public class Actionbar : MonoBehaviour, IDropHandler
         }
     }
 
+    private void OpenMenuListener()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (EscapeMenu.activeSelf)
+            {
+                EscapeMenu.SetActive(false);
+            }
+            else
+            {
+                EscapeMenu.SetActive(true);
+            }
+        }
+    }
+
     /// <summary>Select the button when clicked on and remember the new selected value</summary>
-    public void SelectButtonOnClick(Image clickedFrame)
+    private void SelectButtonOnClick(Image clickedFrame)
     {
         int selected = Selected;
         int index = 0;
