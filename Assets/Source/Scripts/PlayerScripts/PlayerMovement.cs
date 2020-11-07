@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Source.GameSettings;
+using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -6,6 +7,8 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D rb;
     public Animator animator;
     public SpriteRenderer rend;
+    public bool isFrozen = false;
+    public float freezeTime = 0f;
 
     Vector2 movement;
 
@@ -19,6 +22,22 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isFrozen)
+        {
+            if(freezeTime + GameConstants.TRAP_FREEZETIME > Time.time)
+            {
+                return;
+            }
+            else
+            {
+                isFrozen = false;
+                freezeTime = 0f;
+                FreezetimeCountdown cntDown = gameObject.GetComponent<FreezetimeCountdown>();
+                cntDown.textDisplay.SetActive(false);
+                Debug.Log("Freezetime over!");
+            }
+        }
+
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
@@ -56,6 +75,15 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+        if (!isFrozen)
+        {
+            rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+        }
+        else
+        {
+            animator.SetFloat(AnimatorConstant.Speed.Name, 0f);
+            rb.MovePosition(rb.position);
+        }
+
     }
 }

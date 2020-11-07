@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using static AbstractItem;
+using UnityEditor.Build.Player;
 
 public class PlayerCollision : MonoBehaviour
 {
@@ -37,6 +38,26 @@ public class PlayerCollision : MonoBehaviour
                 Destroy(other.gameObject);
             }
             EqItem.CheckEquippedItem();
+        }else if(other.gameObject.CompareTag("Item")&&other.gameObject.GetComponent<CollectableItem>().Collectable.Tag.Equals(ItemTag.Used))
+            {
+            FreezePlayer(other);
         }
+    }
+
+    private void FreezePlayer(Collider2D trap)
+    {
+        //Freeze Player
+        PlayerMovement movement = gameObject.GetComponent<PlayerMovement>();
+        movement.isFrozen = true;
+        movement.freezeTime = Time.time;
+        Destroy(trap.gameObject);
+
+        //Start Countdown
+        FreezetimeCountdown cntDown = gameObject.GetComponent<FreezetimeCountdown>();
+        cntDown.TriggerCountdown();
+
+        //Change Display
+        Canvas c = gameObject.GetComponent<Canvas>();
+        
     }
 }
