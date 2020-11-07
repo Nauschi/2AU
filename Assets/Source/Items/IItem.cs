@@ -8,5 +8,5 @@ public interface IItem
     Sprite Sprite { get; set; }
 
     void UseItem(GameObject player, ActionButton abs);
-
+    void TriggerUsedItem(GameObject player, Collider2D itemCollider);
 }

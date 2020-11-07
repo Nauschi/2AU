@@ -13,7 +13,7 @@ public class CollectableItem : MonoBehaviour
     }
 
     private Sprite[] Sprites;
-    public IItem Collectable { get; set; }
+    public IItem Item { get; set; }
 
     // Start is called before the first frame update
     void Start()
@@ -40,13 +40,13 @@ public class CollectableItem : MonoBehaviour
         switch (name)
         {
             case ItemType.Trap:
-                Collectable = new TrapItem(name, Sprites[randomItem], ItemTag.Collectable);
+                Item = new TrapItem(name, Sprites[randomItem], ItemTag.Collectable);
                 break;
             case ItemType.Gun:
-                Collectable = new GunItem(name, Sprites[randomItem], ItemTag.Collectable);
+                Item = new GunItem(name, Sprites[randomItem], ItemTag.Collectable);
                 break;
         }
 
-        this.gameObject.GetComponent<SpriteRenderer>().sprite = Collectable.Sprite;
+        this.gameObject.GetComponent<SpriteRenderer>().sprite = Item.Sprite;
     }
 }

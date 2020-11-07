@@ -17,6 +17,7 @@ public class TrapItem : AbstractItem, IItem
         _tag = tag;
 
         CollectableItemPrefab = (GameObject) Resources.Load("Prefabs/Items/CollectableItem", typeof(GameObject));
+        UsedItemPrefab = (GameObject) Resources.Load("Prefabs/Items/UsedItem", typeof(GameObject));
     }
 
     public void UseItem(GameObject player, ActionButton abs)
@@ -50,7 +51,7 @@ public class TrapItem : AbstractItem, IItem
 
         //check collision and return if we are colliding
         Vector2 droppedPos = new Vector2(playerPos.x + quantX, playerPos.y + quantY);
-        Vector2 prefabScale = new Vector2(CollectableItemPrefab.transform.localScale.x * 10, CollectableItemPrefab.transform.localScale.y * 10);
+        Vector2 prefabScale = new Vector2(UsedItemPrefab.transform.localScale.x * 10, UsedItemPrefab.transform.localScale.y * 10);
         bool isColliding = Physics2D.OverlapBox(droppedPos, prefabScale, 90);
         if (isColliding)
         {
@@ -59,20 +60,41 @@ public class TrapItem : AbstractItem, IItem
         }
 
         //Create new object on ground
-        GameObject createdObject = GameObject.Instantiate(CollectableItemPrefab, droppedPos, Quaternion.identity);
-        CollectableItem collectable = createdObject.GetComponent<CollectableItem>();
-        collectable.Collectable = abs.Item;
-        collectable.randomGen = false;
-        collectable.Collectable.Tag = ItemTag.Used; //set item used tag
-        createdObject.GetComponent<SpriteRenderer>().sprite = abs.Item.Sprite;
+        CreateUsedItem(droppedPos, abs);
 
         //Remove the item from ActionBar
         RemoveItemFromActionBar(abs); 
     }
 
-    void RemoveItemFromActionBar(ActionButton abs)
+    public void TriggerUsedItem(GameObject player, Collider2D itemCollider)
     {
-        abs.Item = null;
+        //Freeze Player
+        PlayerMovement movement = player.GetComponent<PlayerMovement>();
+        movement.isFrozen = true;
+        movement.freezeTime = Time.time;
+        UnityEngine.Object.Destroy(itemCollider.gameObject);
+
+        //Start Countdown
+        FreezetimeCountdown cntDown = player.GetComponent<FreezetimeCountdown>();
+        cntDown.TriggerCountdown();
+
+        //Change Display
+        Canvas c = player.GetComponent<Canvas>(); //TODO: remove if not needed anymore
+    }
+
+    private void CreateUsedItem(Vector2 droppedPos, ActionButton abs)
+    {
+        GameObject createdObject = GameObject.Instantiate(UsedItemPrefab, droppedPos, Quaternion.identity);
+        UsedItem usedItem = createdObject.GetComponent<UsedItem>();
+        usedItem.Item = abs.Item; //set item
+        usedItem.Item.Tag = ItemTag.Used; //set item used tag
+        createdObject.GetComponent<SpriteRenderer>().sprite = abs.Item.Sprite; //set correct sprite
+    }
+
+    private void RemoveItemFromActionBar(ActionButton abs)
+    {
+        abs.Item = null; 
+        //ActionButton.cs will do the rest
     }
 
 }

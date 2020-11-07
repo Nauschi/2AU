@@ -21,4 +21,9 @@ public class GunItem : AbstractItem, IItem
     {
         throw new System.NotImplementedException();
     }
+
+    public void TriggerUsedItem(GameObject player, Collider2D itemCollider)
+    {
+        throw new System.NotImplementedException();
+    }
 }

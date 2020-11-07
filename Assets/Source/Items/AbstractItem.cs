@@ -13,6 +13,7 @@ public abstract class AbstractItem
     private string Tag;
 
     public GameObject CollectableItemPrefab;
+    public GameObject UsedItemPrefab;
 
     public AbstractItem(string name, Sprite sprite, string tag)
     {

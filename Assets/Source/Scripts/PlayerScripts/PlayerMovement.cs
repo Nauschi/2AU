@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
                 isFrozen = false;
                 freezeTime = 0f;
                 FreezetimeCountdown cntDown = gameObject.GetComponent<FreezetimeCountdown>();
-                cntDown.textDisplay.SetActive(false);
+                cntDown.TextDisplay.SetActive(false);
                 Debug.Log("Freezetime over!");
             }
         }

@@ -11,53 +11,53 @@ public class PlayerCollision : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Item") && other.gameObject.GetComponent<CollectableItem>().Collectable.Tag.Equals(ItemTag.Collectable))
+        if (other.gameObject.CompareTag("Item"))
         {
-            Image[] frameArray = ActionBar.FrameArray;
+            CollectableItem collectable = other.gameObject.GetComponent<CollectableItem>();
+            UsedItem used = other.gameObject.GetComponent<UsedItem>();
 
-            // I likey likey hardcoded. Can be adjusted to for loop as well in the future
-            ActionButton abs1 = frameArray[0].transform.parent.gameObject.GetComponent<ActionButton>();
-            ActionButton abs2 = frameArray[1].transform.parent.gameObject.GetComponent<ActionButton>();
-            ActionButton abs3 = frameArray[2].transform.parent.gameObject.GetComponent<ActionButton>();
-
-            CollectableItem item = other.GetComponent<CollectableItem>();
-
-            if (abs1.Item == null)
+            if (collectable != null && collectable.Item.Tag.Equals(ItemTag.Collectable))
             {
-                abs1.Item = item.Collectable;
-                Destroy(other.gameObject);
+                CollisionWithCollectableItem(other);
+            } else if (used != null && used.Item.Tag.Equals(ItemTag.Used))
+            {
+                CollisionWithUsedItem(other);
             }
-            else if (abs2.Item == null)
-            {
-                abs2.Item = item.Collectable;
-                Destroy(other.gameObject);
-            }
-            else if (abs3.Item == null)
-            {
-                abs3.Item = item.Collectable;
-                Destroy(other.gameObject);
-            }
-            EqItem.CheckEquippedItem();
-        }else if(other.gameObject.CompareTag("Item")&&other.gameObject.GetComponent<CollectableItem>().Collectable.Tag.Equals(ItemTag.Used))
-            {
-            FreezePlayer(other);
         }
     }
 
-    private void FreezePlayer(Collider2D trap)
+    private void CollisionWithUsedItem(Collider2D other)
     {
-        //Freeze Player
-        PlayerMovement movement = gameObject.GetComponent<PlayerMovement>();
-        movement.isFrozen = true;
-        movement.freezeTime = Time.time;
-        Destroy(trap.gameObject);
+        UsedItem item = other.GetComponent<UsedItem>();
+        item.Item.TriggerUsedItem(this.gameObject, other);
+    }
 
-        //Start Countdown
-        FreezetimeCountdown cntDown = gameObject.GetComponent<FreezetimeCountdown>();
-        cntDown.TriggerCountdown();
+    private void CollisionWithCollectableItem(Collider2D other)
+    {
+        Image[] frameArray = ActionBar.FrameArray;
 
-        //Change Display
-        Canvas c = gameObject.GetComponent<Canvas>();
-        
+        // I likey likey hardcoded. Can be adjusted to for loop as well in the future
+        ActionButton abs1 = frameArray[0].transform.parent.gameObject.GetComponent<ActionButton>();
+        ActionButton abs2 = frameArray[1].transform.parent.gameObject.GetComponent<ActionButton>();
+        ActionButton abs3 = frameArray[2].transform.parent.gameObject.GetComponent<ActionButton>();
+
+        CollectableItem item = other.GetComponent<CollectableItem>();
+
+        if (abs1.Item == null)
+        {
+            abs1.Item = item.Item;
+            Destroy(other.gameObject);
+        }
+        else if (abs2.Item == null)
+        {
+            abs2.Item = item.Item;
+            Destroy(other.gameObject);
+        }
+        else if (abs3.Item == null)
+        {
+            abs3.Item = item.Item;
+            Destroy(other.gameObject);
+        }
+        EqItem.CheckEquippedItem();
     }
 }
