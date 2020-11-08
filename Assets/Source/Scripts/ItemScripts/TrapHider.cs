@@ -23,7 +23,8 @@ namespace Assets.Source.Scripts.ItemScripts
         {
             yield return new WaitForSeconds(GameConstants.TRAP_HIDETIME);
 
-            usedItem.GetComponent<SpriteRenderer>().sprite = null;
+            Color color = usedItem.GetComponent<SpriteRenderer>().color;
+            usedItem.GetComponent<SpriteRenderer>().color = new Color(color.r, color.g, color.b, 0);
         }
     }
 }
