@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Assets.Source.Scripts.ItemScripts;
+using System.Collections;
+using UnityEngine;
 
 public class TrapItem : AbstractItem, IItem
 {
@@ -89,7 +91,12 @@ public class TrapItem : AbstractItem, IItem
         usedItem.Item = abs.Item; //set item
         usedItem.Item.Tag = ItemTag.Used; //set item used tag
         createdObject.GetComponent<SpriteRenderer>().sprite = abs.Item.Sprite; //set correct sprite
+
+        TrapHider th = createdObject.GetComponent<TrapHider>();
+        th.HideTrap(usedItem);
     }
+
+
 
     private void RemoveItemFromActionBar(ActionButton abs)
     {

@@ -10,5 +10,8 @@ namespace Assets.Source.GameSettings
     {
         /**Freezetime in seconds*/
         public static float TRAP_FREEZETIME = 5f;
+
+        /**Time until Trap disappears after placing it*/
+        public static float TRAP_HIDETIME = 5f;
     }
 }

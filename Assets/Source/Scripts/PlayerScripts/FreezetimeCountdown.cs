@@ -16,9 +16,6 @@ public class FreezetimeCountdown : MonoBehaviour
             StartCoroutine(TimerTake());
         }else
         {
-            //GameObject pane = gameObject.GetComponentInParent<Canvas>().gameObject;
-            //gameObject.Fi
-
             TextDisplay.SetActive(false);
         }
     }
