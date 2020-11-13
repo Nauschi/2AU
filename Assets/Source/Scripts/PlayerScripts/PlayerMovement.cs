@@ -1,7 +1,8 @@
 ﻿using Assets.Source.GameSettings;
 using UnityEngine;
+using Mirror;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     public float moveSpeed = 5f;
     public Rigidbody2D rb;
@@ -22,9 +23,11 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isLocalPlayer) return;
+
         if (isFrozen)
         {
-            if(freezeTime + GameConstants.TRAP_FREEZETIME > Time.time)
+            if (freezeTime + GameConstants.TRAP_FREEZETIME > Time.time)
             {
                 return;
             }
@@ -44,7 +47,8 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
             moveSpeed = 10;
-        } else
+        }
+        else
         {
             moveSpeed = 5;
         }
@@ -53,28 +57,35 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat(AnimatorConstant.Vertical.Name, movement.y);
         animator.SetFloat(AnimatorConstant.Speed.Name, movement.sqrMagnitude);
 
-        if(movement.x != 0)
+        if (movement.x != 0)
         {
-            animator.SetInteger(AnimatorConstant.LastInput.Name, (int) PlayerDirection.SIDE);
-        } else if (movement.y < 0)
+            animator.SetInteger(AnimatorConstant.LastInput.Name, (int)PlayerDirection.SIDE);
+        }
+        else if (movement.y < 0)
         {
-            animator.SetInteger(AnimatorConstant.LastInput.Name, (int) PlayerDirection.DOWN);
-        } else if (movement.y > 0)
+            animator.SetInteger(AnimatorConstant.LastInput.Name, (int)PlayerDirection.DOWN);
+        }
+        else if (movement.y > 0)
         {
-            animator.SetInteger(AnimatorConstant.LastInput.Name, (int) PlayerDirection.UP);
+            animator.SetInteger(AnimatorConstant.LastInput.Name, (int)PlayerDirection.UP);
         }
 
-        if (movement.x < 0) {
+        if (movement.x < 0)
+        {
             rend.flipX = true;
-        } else if (movement.x > 0)
+        }
+        else if (movement.x > 0)
         {
             rend.flipX = false;
         }
+
 
     }
 
     void FixedUpdate()
     {
+        if (!isLocalPlayer) return;
+
         if (!isFrozen)
         {
             rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);

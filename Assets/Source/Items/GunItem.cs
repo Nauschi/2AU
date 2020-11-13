@@ -22,7 +22,7 @@ public class GunItem : AbstractItem, IItem
         throw new System.NotImplementedException();
     }
 
-    public void TriggerUsedItem(GameObject player, Collider2D itemCollider)
+    public void TriggerUsedItem(GameObject player, GameObject collisionItem)
     {
         throw new System.NotImplementedException();
     }

@@ -5,15 +5,15 @@ using UnityEngine.EventSystems;
 public class Actionbar : MonoBehaviour, IDropHandler
 {
 
-    public Image Frame1;
-    public Image Frame2;
-    public Image Frame3;
+    private Image Frame1;
+    private Image Frame2;
+    private Image Frame3;
 
     public Image[] FrameArray;
     public int Selected;
 
-    public GameObject Player;
-    public EquippedItem EqItem;
+    public GameObject Player { get; set; }
+    public EquippedItem EqItem { get; set; }
 
     public GameObject EscapeMenu;
     public GameObject SoundsMenu;
@@ -22,6 +22,11 @@ public class Actionbar : MonoBehaviour, IDropHandler
     // Start is called before the first frame update
     void Start()
     {
+        //me likey likey hardcoded omegaLUL
+        Frame1 = this.gameObject.transform.GetChild(0).GetChild(0).gameObject.GetComponent<Image>();
+        Frame2 = this.gameObject.transform.GetChild(1).GetChild(0).gameObject.GetComponent<Image>();
+        Frame3 = this.gameObject.transform.GetChild(2).GetChild(0).gameObject.GetComponent<Image>();
+
         Button ActionButton1 = Frame1.GetComponent<Button>();
         ActionButton1.Select();
         Selected = 0;

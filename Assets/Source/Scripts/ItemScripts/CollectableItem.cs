@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using static AbstractItem;
+using Mirror;
 
-public class CollectableItem : MonoBehaviour
+public class CollectableItem : NetworkBehaviour
 {
-
-    public bool randomGen = true;
+    public bool randomGen = false;
 
     private static class ItemType
     {
@@ -15,23 +15,24 @@ public class CollectableItem : MonoBehaviour
     private Sprite[] Sprites;
     public IItem Item { get; set; }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (randomGen)
-        {
-            Sprites = Resources.LoadAll<Sprite>("Items");
+    [SyncVar(hook = nameof(ChangeItem))]
+    private string spriteName;
 
-            if (Sprites.Length == 0)
-            {
-                Debug.Log("I am empty. Please feed me master");
-            }
+    private void Start()
+    {
+        if (isServer)
+        {
             CreateRandomCollectableItem();
         }
     }
 
-    void CreateRandomCollectableItem()
+    public void CreateRandomCollectableItem()
     {
+        Sprites = Resources.LoadAll<Sprite>("Items");
+        if (Sprites.Length == 0)
+        {
+            Debug.Log("I am empty. Please feed me master");
+        }
         float randomNumber = Random.Range(0f, 100f);
         int randomItem = randomNumber < 50 ? 0 : 1;
 
@@ -48,5 +49,24 @@ public class CollectableItem : MonoBehaviour
         }
 
         this.gameObject.GetComponent<SpriteRenderer>().sprite = Item.Sprite;
+        spriteName = Item.Sprite.name;
+    }    
+
+    public void ChangeItem(string oldSpriteName, string newSpriteName)
+    {
+        Debug.Log("Called Sync Hook ChangeItem");
+        string name = newSpriteName;
+        name = name.Substring(0, name.IndexOf("Icon"));
+        switch (name)
+        {
+            case ItemType.Trap:
+                Item = new TrapItem(name, Resources.Load<Sprite>("Items/trapIcon"), ItemTag.Collectable);
+                break;
+            case ItemType.Gun:
+                Item = new GunItem(name, Resources.Load<Sprite>("Items/gunIcon"), ItemTag.Collectable);
+                break;
+        }
+        this.gameObject.GetComponent<SpriteRenderer>().sprite = Item.Sprite;
     }
+
 }

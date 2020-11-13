@@ -68,13 +68,13 @@ public class TrapItem : AbstractItem, IItem
         RemoveItemFromActionBar(abs); 
     }
 
-    public void TriggerUsedItem(GameObject player, Collider2D itemCollider)
+    public void TriggerUsedItem(GameObject player, GameObject collisionItem)
     {
         //Freeze Player
         PlayerMovement movement = player.GetComponent<PlayerMovement>();
         movement.isFrozen = true;
         movement.freezeTime = Time.time;
-        UnityEngine.Object.Destroy(itemCollider.gameObject);
+        UnityEngine.Object.Destroy(collisionItem);
 
         //Start Countdown
         FreezetimeCountdown cntDown = player.GetComponent<FreezetimeCountdown>();

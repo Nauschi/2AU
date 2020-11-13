@@ -1,18 +1,27 @@
-﻿using System.Collections;
+﻿using Assets.Source.GameSettings;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Mirror;
+using System;
 
 public class EquippedItem : MonoBehaviour
 {
-    public Actionbar Actionbar;
+    private Actionbar Actionbar;
+    public PlayerUI PUI;
+
+    private void Start()
+    {
+        Actionbar = GameObject.Find(GameConstants.ACTIONBAR_GAMEOBJECT_NAME).GetComponent<Actionbar>();
+    }
 
     public void CheckEquippedItem()
     {
         bool anyActionButtonIsDragged = false;
-        foreach (GameObject go in GameObject.FindGameObjectsWithTag("ActionButton"))
+        for (int i = 0; i < 3; i++)
         {
-            if (go.GetComponent<Draggable>().isDraggin)
+            if (Actionbar.gameObject.transform.GetChild(i).gameObject.GetComponent<Draggable>().isDraggin)
             {
                 anyActionButtonIsDragged = true;
                 break;
@@ -21,21 +30,26 @@ public class EquippedItem : MonoBehaviour
 
         if (!anyActionButtonIsDragged)
         {
-            Image equippedImage = this.GetComponent<Image>();
             Image selectedFrame = Actionbar.GetSelectedFrame();
             Sprite selectedSprite = selectedFrame.transform.parent.gameObject.GetComponent<Image>().sprite;
             if (selectedSprite != null)
             {
-                equippedImage.sprite = selectedSprite;
-                Color color = equippedImage.color;
-                equippedImage.color = new Color(color.r, color.g, color.b, 255);
-            }
-            else if (equippedImage.sprite != null)
+                string selectedSpriteName = selectedSprite.name;
+                selectedSpriteName = selectedSpriteName.Substring(0, selectedSpriteName.IndexOf("Icon"));
+                EquippedItemEnum resultEnum;
+                if (Enum.TryParse(selectedSpriteName, out resultEnum)) // parses the substring name of selected item into an Enum
+                {
+                    if (resultEnum != PUI.equippedItem) // only do something if we have not already equipped the new selected item 
+                    {
+                        PUI.CmdChangeEquippedItem(resultEnum);
+                    }
+                }
+            }  else if (PUI.equippedItem != EquippedItemEnum.nothing)
             {
-                equippedImage.sprite = null;
-                Color color = equippedImage.color;
-                equippedImage.color = new Color(color.r, color.g, color.b, 0);
+                PUI.CmdChangeEquippedItem(EquippedItemEnum.nothing);
             }
         }
+        
     }
 }
+

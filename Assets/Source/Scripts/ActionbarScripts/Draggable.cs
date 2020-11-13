@@ -11,11 +11,10 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IDropHa
     private int TempHierarchyIndex;
     private int TempSelected;
     private bool HierarchyChange;
-    private Actionbar ActionBar;
+    public Actionbar ActionBar;
 
     void Start()
     {
-        ActionBar = this.transform.parent.gameObject.GetComponent<Actionbar>();
         ActionBarTransform = this.transform.parent;
     }
 

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class UsedItem : MonoBehaviour
+public class UsedItem : NetworkBehaviour
 {
     private static class ItemType
     {

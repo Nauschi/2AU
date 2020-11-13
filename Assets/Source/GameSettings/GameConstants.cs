@@ -13,5 +13,8 @@ namespace Assets.Source.GameSettings
 
         /**Time until Trap disappears after placing it*/
         public static float TRAP_HIDETIME = 5f;
+
+        /** The name of the local gameobject of the Actionbar */
+        public static string ACTIONBAR_GAMEOBJECT_NAME = "ActionBar";
     }
 }
