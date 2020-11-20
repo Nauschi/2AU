@@ -12,7 +12,7 @@ namespace Assets.Source.GameSettings
         public static float TRAP_FREEZETIME = 5f;
 
         /**Time until Trap disappears after placing it*/
-        public static float TRAP_HIDETIME = 5f;
+        public static float TRAP_HIDETIME = 2f;
 
         /** The name of the local gameobject of the Actionbar */
         public static string ACTIONBAR_GAMEOBJECT_NAME = "ActionBar";

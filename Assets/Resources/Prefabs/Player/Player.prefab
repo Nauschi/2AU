@@ -327,6 +327,8 @@ MonoBehaviour:
     type: 3}
   TrapPrefab: {fileID: 3561442728439405231, guid: 05b3c86b709226f47b50a9e609286da2,
     type: 3}
+  UsedItemPrefab: {fileID: 4713831798563050248, guid: 29be3cfe016e38f4db6581787a5ef2e5,
+    type: 3}
   equippedItem: 0
 --- !u!114 &5999694450387603501
 MonoBehaviour:

@@ -5,7 +5,8 @@ using UnityEngine.UI;
 using Mirror;
 using System;
 using System.Linq;
-
+using static AbstractItem;
+using Assets.Source.Scripts.ItemScripts;
 
 public enum EquippedItemEnum : byte
 {
@@ -25,6 +26,7 @@ public class PlayerUI : NetworkBehaviour
     //Item Prefabs
     public GameObject GunPrefab;
     public GameObject TrapPrefab;
+    public GameObject UsedItemPrefab;
 
     //All variables that need to be synced to all clients
     [SyncVar(hook = nameof(ChangeMaxHealth))]
@@ -68,6 +70,32 @@ public class PlayerUI : NetworkBehaviour
                 Instantiate(TrapPrefab, EqItem.transform);
                 break;
         }
+    }
+
+    [Command]
+    public void CmdCreateUsedItem(Vector2 droppedPos)
+    {
+        // Instantiate the scene object on the server
+        GameObject newSceneObject = Instantiate(UsedItemPrefab, droppedPos, Quaternion.identity);
+        newSceneObject.transform.localScale = newSceneObject.transform.localScale / 11;        
+
+        UsedItem usedItemSceneObject = newSceneObject.GetComponent<UsedItem>();
+        IItem item = null;
+        switch (equippedItem)
+        {
+            case EquippedItemEnum.gun: item = new GunItem("gun", Resources.Load<Sprite>("Items/gunIcon"), ItemTag.Used); break;
+            case EquippedItemEnum.trap: item = new TrapItem("trap", Resources.Load<Sprite>("Items/trapIcon"), ItemTag.Used); break;
+        }
+        usedItemSceneObject.Item = item;
+
+        // set the child object on the server
+        usedItemSceneObject.SetItem(equippedItem);
+
+        // set the SyncVar on the scene object for clients
+        usedItemSceneObject.CurrentItem = equippedItem;
+
+        // Spawn the scene object on the network for all to see
+        NetworkServer.Spawn(newSceneObject);
     }
 
     [Command]

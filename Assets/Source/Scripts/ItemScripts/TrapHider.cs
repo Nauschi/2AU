@@ -23,8 +23,9 @@ namespace Assets.Source.Scripts.ItemScripts
         {
             yield return new WaitForSeconds(GameConstants.TRAP_HIDETIME);
 
-            Color color = usedItem.GetComponent<SpriteRenderer>().color;
-            usedItem.GetComponent<SpriteRenderer>().color = new Color(color.r, color.g, color.b, 0);
+            GameObject childObject = gameObject.transform.GetChild(0).gameObject;
+            Color color = childObject.GetComponent<SpriteRenderer>().color;
+            childObject.GetComponent<SpriteRenderer>().color = new Color(color.r, color.g, color.b, 0);
         }
     }
 }

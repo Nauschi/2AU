@@ -126,6 +126,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  CurrentItem: 0
+  TrapPrefab: {fileID: 3561442728439405231, guid: 05b3c86b709226f47b50a9e609286da2,
+    type: 3}
+  GunPrefab: {fileID: 9194600095234882332, guid: bbbbc3fbdf565cb4b8caa661d10656c3,
+    type: 3}
 --- !u!114 &280227815005707496
 MonoBehaviour:
   m_ObjectHideFlags: 0

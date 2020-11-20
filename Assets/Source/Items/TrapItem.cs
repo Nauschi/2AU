@@ -62,7 +62,7 @@ public class TrapItem : AbstractItem, IItem
         }
 
         //Create new object on ground
-        CreateUsedItem(droppedPos, abs);
+        CreateUsedItem(droppedPos, abs, player);
 
         //Remove the item from ActionBar
         RemoveItemFromActionBar(abs); 
@@ -84,19 +84,11 @@ public class TrapItem : AbstractItem, IItem
         Canvas c = player.GetComponent<Canvas>(); //TODO: remove if not needed anymore
     }
 
-    private void CreateUsedItem(Vector2 droppedPos, ActionButton abs)
+    private void CreateUsedItem(Vector2 droppedPos, ActionButton abs, GameObject player)
     {
-        GameObject createdObject = GameObject.Instantiate(UsedItemPrefab, droppedPos, Quaternion.identity);
-        UsedItem usedItem = createdObject.GetComponent<UsedItem>();
-        usedItem.Item = abs.Item; //set item
-        usedItem.Item.Tag = ItemTag.Used; //set item used tag
-        createdObject.GetComponent<SpriteRenderer>().sprite = abs.Item.Sprite; //set correct sprite
-
-        TrapHider th = createdObject.GetComponent<TrapHider>();
-        th.HideTrap(usedItem);
+        PlayerUI pui = player.GetComponent<PlayerUI>();
+        pui.CmdCreateUsedItem(droppedPos);
     }
-
-
 
     private void RemoveItemFromActionBar(ActionButton abs)
     {
